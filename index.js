@@ -42,43 +42,28 @@ memecanvas.init = function(output, append){
     appendedFilename = append;
 };
 
-memecanvas.generate = function(file, topText, bottomText, next){
-    image.get(file, function(img){
-        if(img){
-            try{
-                var ctx = image.ctx(img.canvas.width, img.canvas.height);
-                ctx.drawImage(img.canvas, 0, 0);
-                ctx = drawText(ctx, 'top', topText, img.canvas.width, img.canvas.height);
-                ctx = drawText(ctx, 'bottom', bottomText, img.canvas.width, img.canvas.height);
+memecanvas.generate = function(imgBuffer, topText, bottomText, next){
+    image.get(imgBuffer, function(img){
+    if(img){
+        try{
+            var ctx = image.ctx(img.canvas.width, img.canvas.height);
+            ctx.drawImage(img.canvas, 0, 0);
+            ctx = drawText(ctx, 'top', topText, img.canvas.width, img.canvas.height);
+            ctx = drawText(ctx, 'bottom', bottomText, img.canvas.width, img.canvas.height);
 
-                var memefilename = file.split('/');
-                memefilename = memefilename[memefilename.length-1];
-
-                var parts = memefilename.split('.');
-                parts.pop();
-                parts.push(appendedFilename+'.png');
-
-                memefilename = parts.join('');
-
-                if(!fs.existsSync(outputDirectory)){
-                    fs.mkdirSync(outputDirectory);
-                }
-
-                if(!endsWith(outputDirectory, '/')){
-                    outputDirectory = outputDirectory + '/';
-                }
-
-                image.save(ctx, outputDirectory + memefilename, function() {
+            image.save(ctx,
+                outputDirectory, //+ memefilename,  // ignored now that we're not doing files
+                function(err, memeData) {
                     ctx = null;
-                    return next(null, outputDirectory+memefilename);
-                });
-            } catch(e){
-                return next(e, null);
-            }
-
-        } else {
-            return ('could not open the image provided', null);
+                    return next(null, memeData);
+            });
+        } catch(e){
+            return next(e, null);
         }
+
+    } else {
+        return ('could not open the image provided', null);
+    }
 
     });
 };
