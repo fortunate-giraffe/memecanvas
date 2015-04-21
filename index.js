@@ -9,15 +9,16 @@ var endsWith = function(str, suffix) {
 };
 
 var drawText = function(context, pos, text, width, height) {
-    var fontSize = 100;
+    var fontSize = 500;
     context.textAlign = "center";
     context.fillStyle = "#fff";
     context.strokeStyle = "#000";
     context.lineWidth = 6;
+    context.lineJoin = 'round';
 
     while(1) {
         context.font = "bold " + fontSize + "px Impact";
-        if( (context.measureText(text).width < (width-15)) && (fontSize < height/10) ) {
+        if( (context.measureText(text).width < (width-15)) && (fontSize < height/5) ) {
             break;
         }
         fontSize-=2;
